@@ -84,9 +84,8 @@ function Frames:__init(o)
          cap:read{frameCV}
 
          -- Go from BGR=>RGB and then from hxwx3 => 3xhxw
-         local frameTH = frameCV:clone()
-         cv.cvtColor{frameCV, frameTH, cv.COLOR_BGR2RGB}
-         frameTH = frameTH:transpose(1,3):transpose(2,3)
+         cv.cvtColor{frameCV, frameCV, cv.COLOR_BGR2RGB}
+         local frameTH = frameCV:transpose(1,3):transpose(2,3):clone()
          return(frameTH)
       end
    else
@@ -96,13 +95,12 @@ function Frames:__init(o)
          cap:read{frameCV}
 
          -- resize frame
-         local frameTH = torch.ByteTensor(height, width, 3)
-         local dim = cv.Size(width, height)
-         cv.resize{src = frameCV, dst = frameTH, dsize = dim, fx = 0, fy = 0, interpolation = cv.INTER_AREA}
+         local frameSmallCV = 
+            cv.resize{src = frameCV, dsize = dim, fx = 0, fy = 0, interpolation = cv.INTER_AREA}
 
          -- Go from BGR=>RGB and then from hxwx3 => 3xhxw
-         cv.cvtColor{frameTH, frameTH, cv.COLOR_BGR2RGB}
-         frameTH = frameTH:transpose(1,3):transpose(2,3)
+         cv.cvtColor{frameSmallCV, frameSmallCV, cv.COLOR_BGR2RGB}
+         frameTH = frameSmallCV:transpose(1,3):transpose(2,3):clone()
          return(frameTH)
       end
    end
